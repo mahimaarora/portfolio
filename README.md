@@ -2,7 +2,8 @@
 
 Static website for **mahimaarora.com**. Website files live in `site/`.
 
-The current page shows an animated asterisk and playful rotating verbs.
+The current page shows a six-frame terminal asterisk that blooms and contracts,
+a highlight that moves across the text, and playful rotating verbs.
 It supports pausing, reduced motion, and background-tab suspension.
 Edit the verb list in `site/agent.js` and the appearance in `site/style.css`.
 

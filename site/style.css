@@ -29,34 +29,38 @@ main { display: grid; place-items: center; padding-block: 48px; }
 .agent {
   display: flex;
   align-items: center;
-  gap: clamp(16px, 3vw, 32px);
+  gap: 0.55em;
   color: var(--rust);
-  font-size: clamp(18px, 3.6vw, 38px);
+  font-size: clamp(20px, 3.6vw, 36px);
   transform: translateY(-3vh);
 }
 
 .mark {
-  width: clamp(44px, 7.5vw, 80px);
+  display: block;
+  width: 1.1em;
   flex: none;
-  overflow: visible;
-  animation: turn 12s steps(8, end) infinite;
-}
-
-.rays {
-  transform-origin: 50px 50px;
-  animation: breathe 2.4s ease-in-out infinite;
+  font-family: Menlo, Consolas, "DejaVu Sans Mono", monospace;
+  font-size: 1.35em;
+  font-variant-emoji: text;
+  line-height: 1;
+  text-align: center;
 }
 
 .activity { width: 16ch; white-space: nowrap; letter-spacing: -0.045em; }
+.word { display: inline-block; }
+.ellipsis { margin-left: 0.06em; }
 
-#verb {
-  display: inline-block;
-  transition: opacity 160ms ease, transform 160ms ease;
+@supports (background-clip: text) {
+  .word {
+    background: linear-gradient(90deg,
+      var(--rust) 38%, #793820 50%, var(--rust) 62%);
+    background-size: 300% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: shimmer 2s steps(24, end) infinite;
+  }
 }
-
-#verb.is-changing { opacity: 0; transform: translateY(-0.15em); }
-
-.ellipsis { display: inline-block; margin-left: 0.06em; }
 
 footer {
   display: flex;
@@ -95,22 +99,23 @@ button:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
   white-space: nowrap;
 }
 
-.is-paused .mark, .is-paused .rays { animation-play-state: paused; }
-.is-paused #verb { transition: none; }
+.is-paused .word { animation-play-state: paused; }
 
-@keyframes turn { to { transform: rotate(360deg); } }
-@keyframes breathe {
-  0%, 100% { transform: scale(0.86); }
-  50% { transform: scale(1.06); }
+@keyframes shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: 0% 0; }
 }
 
 @media (max-width: 380px) {
-  .agent { gap: 12px; font-size: 16px; }
+  .agent { font-size: 18px; }
   footer { align-items: flex-start; flex-direction: column; gap: 4px; }
   button { padding-left: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mark, .rays { animation: none; }
-  #verb { transition: none; }
+  .word { animation: none; }
+}
+
+@media (forced-colors: active) {
+  .word { background: none; color: CanvasText; }
 }
