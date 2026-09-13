@@ -20,15 +20,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Check animation behavior
+        run: node scripts/check-agent.cjs
       - name: Check and serve the website
         run: |
           test -s site/index.html
           python3 -m http.server 8000 --bind 127.0.0.1 --directory site &
           server_pid=$!
           trap 'kill "$server_pid"' EXIT
-          curl --fail --silent --show-error --retry 5 --retry-connrefused --retry-delay 1 \
-            http://127.0.0.1:8000/ --output /tmp/portfolio-index.html
-          cmp site/index.html /tmp/portfolio-index.html
+          for file in index.html style.css agent.js mark.svg; do
+            curl --fail --silent --show-error --retry 5 --retry-connrefused --retry-delay 1 \
+              "http://127.0.0.1:8000/$file" --output "/tmp/portfolio-$file"
+            cmp "site/$file" "/tmp/portfolio-$file"
+          done
       - name: Upload website
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v4

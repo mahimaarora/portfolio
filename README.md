@@ -2,6 +2,10 @@
 
 Static website for **mahimaarora.com**. Website files live in `site/`.
 
+The current page shows an animated asterisk and playful rotating verbs.
+It supports pausing, reduced motion, and background-tab suspension.
+Edit the verb list in `site/agent.js` and the appearance in `site/style.css`.
+
 ## Local preview
 
 ```sh
@@ -13,7 +17,9 @@ Open http://localhost:8000. No dependencies or build step are needed yet.
 ## CI/CD
 
 The `CI and deploy` workflow checks pull requests and pushes to `main`.
-It starts a local HTTP server and confirms that `/` serves `site/index.html`.
+It checks the animation behavior, then starts a local HTTP server and verifies
+that the HTML, stylesheet, script, and favicon are served correctly.
+Run the behavior check locally with `node scripts/check-agent.cjs`.
 After a successful check on `main`, it publishes only `site/` to GitHub Pages.
 Pull requests do not deploy. The workflow can also be run manually on `main`.
 
