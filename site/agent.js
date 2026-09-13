@@ -13,7 +13,7 @@ const toggle = document.getElementById("motion-toggle");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let current = 0;
 let elapsed = 0;
-let manuallyPaused = false;
+let motionEnabled = !reducedMotion.matches;
 let interval;
 
 function animate() {
@@ -29,18 +29,28 @@ function animate() {
 
 function updateMotion() {
   clearInterval(interval);
-  const paused = manuallyPaused || reducedMotion.matches || document.hidden;
+  const paused = !motionEnabled || document.hidden;
   document.documentElement.classList.toggle("is-paused", paused);
-  toggle.hidden = reducedMotion.matches;
-  toggle.textContent = manuallyPaused ? "Resume animation" : "Pause animation";
-  if (reducedMotion.matches) spinner.textContent = "✻";
+  document.documentElement.classList.toggle("motion-enabled", motionEnabled);
+  toggle.hidden = false;
+  toggle.textContent = motionEnabled ? "Pause animation" : "Play animation";
   if (!paused) interval = setInterval(animate, 100);
 }
 
+function updateDevicePreference() {
+  motionEnabled = !reducedMotion.matches;
+  updateMotion();
+}
+
 toggle.addEventListener("click", () => {
-  manuallyPaused = !manuallyPaused;
+  motionEnabled = !motionEnabled;
   updateMotion();
 });
-reducedMotion.addEventListener("change", updateMotion);
+if (typeof reducedMotion.addEventListener === "function") {
+  reducedMotion.addEventListener("change", updateDevicePreference);
+} else {
+  reducedMotion.addListener(updateDevicePreference);
+}
 document.addEventListener("visibilitychange", updateMotion);
+window.addEventListener("pageshow", updateMotion);
 updateMotion();

@@ -13,6 +13,7 @@
 * { box-sizing: border-box; }
 
 body {
+  min-height: 100vh;
   min-height: 100svh;
   margin: 0;
   display: grid;
@@ -50,7 +51,7 @@ main { display: grid; place-items: center; padding-block: 48px; }
 .word { display: inline-block; }
 .ellipsis { margin-left: 0.06em; }
 
-@supports (background-clip: text) {
+@supports (background-clip: text) or (-webkit-background-clip: text) {
   .word {
     background: linear-gradient(90deg,
       var(--rust) 38%, #793820 50%, var(--rust) 62%);
@@ -58,6 +59,7 @@ main { display: grid; place-items: center; padding-block: 48px; }
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
+    -webkit-text-fill-color: transparent;
     animation: shimmer 2s steps(24, end) infinite;
   }
 }
@@ -113,9 +115,9 @@ button:focus-visible { outline: 2px solid var(--focus); outline-offset: 5px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .word { animation: none; }
+  :root:not(.motion-enabled) .word { animation: none; }
 }
 
 @media (forced-colors: active) {
-  .word { background: none; color: CanvasText; }
+  .word { background: none; color: CanvasText; -webkit-text-fill-color: CanvasText; }
 }
