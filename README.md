@@ -4,8 +4,9 @@ Static website for **mahimaarora.com**. Website files live in `site/`.
 
 The current page shows a six-frame terminal asterisk that blooms and contracts,
 a highlight that moves across the text, and playful rotating verbs.
-It supports pausing, reduced motion, and background-tab suspension.
+It respects reduced motion and suspends animation in background tabs.
 With Reduce Motion enabled, the page starts still and offers **Play animation**.
+The Play control disappears once the animation starts; there is no Pause control.
 It also supports older Safari media-query listeners and returning from the back/forward cache.
 Edit the verb list in `site/agent.js` and the appearance in `site/style.css`.
 

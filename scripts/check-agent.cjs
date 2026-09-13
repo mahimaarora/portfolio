@@ -40,10 +40,9 @@ for (const legacy of [false, true]) {
       timers.values().next().value();
     };
 
-    assert.equal(toggle.hidden, false, "The play control must remain available");
+    assert.equal(toggle.hidden, !reduced, "Only show Play when motion is disabled");
     if (reduced) {
       assert.equal(timers.size, 0, "Reduce Motion pauses by default");
-      assert.equal(toggle.textContent, "Play animation");
       handlers.click();
       assert(classes.has("motion-enabled"), "An explicit tap can enable all motion");
     }
@@ -60,12 +59,8 @@ for (const legacy of [false, true]) {
       assert.notEqual(verb.textContent, previous);
     }
 
-    handlers.click();
+    assert.equal(toggle.hidden, true, "No Pause option while animation is running");
     handlers.pageshow();
-    assert.equal(timers.size, 0, "Returning to a paused page must not restart it");
-    assert(classes.has("is-paused"));
-    assert.equal(toggle.textContent, "Play animation");
-    handlers.click();
     tick();
 
     preference.matches = true;

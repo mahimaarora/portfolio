@@ -32,8 +32,7 @@ function updateMotion() {
   const paused = !motionEnabled || document.hidden;
   document.documentElement.classList.toggle("is-paused", paused);
   document.documentElement.classList.toggle("motion-enabled", motionEnabled);
-  toggle.hidden = false;
-  toggle.textContent = motionEnabled ? "Pause animation" : "Play animation";
+  toggle.hidden = motionEnabled;
   if (!paused) interval = setInterval(animate, 100);
 }
 
@@ -43,7 +42,7 @@ function updateDevicePreference() {
 }
 
 toggle.addEventListener("click", () => {
-  motionEnabled = !motionEnabled;
+  motionEnabled = true;
   updateMotion();
 });
 if (typeof reducedMotion.addEventListener === "function") {
