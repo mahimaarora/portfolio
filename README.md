@@ -1,2 +1,46 @@
-# portfolio
-Mahima Arora's personal portfolio website.
+# Mahima Arora's portfolio
+
+Static website for **mahimaarora.com**. Website files live in `site/`.
+
+## Local preview
+
+```sh
+python3 -m http.server 8000 --directory site
+```
+
+Open http://localhost:8000. No dependencies or build step are needed yet.
+
+## CI/CD
+
+The `CI and deploy` workflow checks pull requests and pushes to `main`.
+It starts a local HTTP server and confirms that `/` serves `site/index.html`.
+After a successful check on `main`, it publishes only `site/` to GitHub Pages.
+Pull requests do not deploy. The workflow can also be run manually on `main`.
+
+In GitHub Settings → Pages, select **GitHub Actions** as the source and set
+the custom domain to **mahimaarora.com**. Enable **Enforce HTTPS** once the
+certificate is ready. Free GitHub Pages requires a public repository.
+
+## Squarespace DNS
+
+Configure the custom domain in GitHub Pages before changing these DNS records.
+
+| Host | Type | Value |
+| --- | --- | --- |
+| `@` | A | `185.199.108.153` |
+| `@` | A | `185.199.109.153` |
+| `@` | A | `185.199.110.153` |
+| `@` | A | `185.199.111.153` |
+| `www` | CNAME | `mahimaarora.github.io` |
+
+Replace only conflicting website records. Keep email and verification records.
+GitHub manages the certificate and redirects `www` to the configured apex domain.
+For an Actions deployment, the custom domain is stored in Pages settings;
+a `CNAME` file in the repository is not required.
+
+## Rollback
+
+Revert the relevant commit on `main`. The workflow deploys the reverted website.
+
+See GitHub's [workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+and [custom-domain documentation](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site).

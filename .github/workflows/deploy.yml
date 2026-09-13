@@ -1,0 +1,53 @@
+name: CI and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check website
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Check and serve the website
+        run: |
+          test -s site/index.html
+          python3 -m http.server 8000 --bind 127.0.0.1 --directory site &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          curl --fail --silent --show-error --retry 5 --retry-connrefused --retry-delay 1 \
+            http://127.0.0.1:8000/ --output /tmp/portfolio-index.html
+          cmp site/index.html /tmp/portfolio-index.html
+      - name: Upload website
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@v5
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v4
